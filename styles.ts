@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   button: {
-    backgroundColor: "#35ACB499",
+    backgroundColor: "rgba(53, 172, 180, 0.9)",
     height: 55,
     alignItems: "center",
     justifyContent: "center",
