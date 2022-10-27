@@ -8,8 +8,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   buttonContainer: {
-    justifyContent: "center",
+    // justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
     height: height / 3,
+    width: width,
   },
   closeButtonContainer: {
     backgroundColor: "white",
@@ -56,6 +59,7 @@ const styles = StyleSheet.create({
   },
   formInputContainer: {
     marginBottom: 70,
+    zIndex: -10,
   },
   formButton: {
     backgroundColor: "#0E9691",
