@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+    transform: [{ translateY: -20 }],
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

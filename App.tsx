@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import styles from "./styles";
-import Svg, { Image } from "react-native-svg";
+import Svg, { ClipPath, Ellipse, Image } from "react-native-svg";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,6 +17,8 @@ import Animated, {
   withDelay,
   FadeOutUp,
   FadeInUp,
+  FadeInDown,
+  FadeOutDown,
 } from "react-native-reanimated";
 
 import loginBackground from "./assets/loginbackground.jpg";
@@ -43,24 +45,6 @@ export default function App() {
     };
   });
 
-  const buttonsAnimatedStyle = useAnimatedStyle(() => {
-    const interpolation = interpolate(
-      imagePosition.value,
-      [0, 1],
-      [height / 3, 0]
-    );
-    return {
-      transform: [{ translateY: withTiming(interpolation, { duration: 300 }) }],
-    };
-  });
-
-  const formAnimatedStyle = useAnimatedStyle(() => {
-    const interpolation = interpolate(imagePosition.value, [0, 1], [1, 0]);
-    return {
-      opacity: withDelay(500, withTiming(interpolation, { duration: 300 })),
-    };
-  });
-
   const loginHandler = () => {
     setLoginOrRegister("Login");
     setFormActive(true);
@@ -79,23 +63,38 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Animated.View style={[StyleSheet.absoluteFill, imageAnimatedStyle]}>
-        <Svg width={width} height={height}>
+        <Svg width={width} height={height + 50}>
+          <ClipPath id="clipPathId">
+            <Ellipse cx={width / 2} rx={height} ry={height + 50} />
+          </ClipPath>
           <Image
             href={loginBackground}
-            width={width}
-            height={height}
+            width={width + 50}
+            height={height + 50}
             preserveAspectRatio="xMidYMid slice"
+            clipPath="url(#clipPathId)"
           />
         </Svg>
-        <Pressable onPress={closeHandler} style={styles.closeButtonContainer}>
-          <Text>X</Text>
-        </Pressable>
+        {formActive ? (
+          <Animated.View
+            entering={FadeInDown.delay(400)}
+            exiting={FadeOutDown.delay(100)}
+            style={{ zIndex: 10 }}
+          >
+            <Pressable
+              onPress={closeHandler}
+              style={styles.closeButtonContainer}
+            >
+              <Text>X</Text>
+            </Pressable>
+          </Animated.View>
+        ) : null}
       </Animated.View>
       {!formActive ? (
         <Animated.View
           style={styles.buttonContainer}
+          entering={FadeInUp.delay(400)}
           exiting={FadeOutUp.delay(100)}
-          entering={FadeInUp.delay(600)}
         >
           <Pressable onPress={loginHandler} style={styles.button}>
             <Text style={styles.buttonText}>LOG IN</Text>
