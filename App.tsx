@@ -5,6 +5,8 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import styles from "./styles";
@@ -15,6 +17,8 @@ import Animated, {
   interpolate,
   withTiming,
   withDelay,
+  FadeIn,
+  FadeOut,
   FadeOutUp,
   FadeInUp,
   FadeInDown,
@@ -22,7 +26,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import loginBackground from "./assets/loginbackground.jpg";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function App() {
   const [loginOrRegister, setLoginOrRegister] = useState<"Login" | "Register">(
@@ -33,10 +37,11 @@ export default function App() {
   const { width, height } = useWindowDimensions();
   const imagePosition = useSharedValue(1);
   const imageAnimatedStyle = useAnimatedStyle(() => {
+    let additionalHeight = loginOrRegister === "Login" ? 0 : 50;
     const interpolation = interpolate(
       imagePosition.value,
       [0, 1],
-      [-height / 2, 0]
+      [-height / 2 - additionalHeight, 0]
     );
     return {
       transform: [
@@ -61,7 +66,11 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={-20}
+    >
       <Animated.View style={[StyleSheet.absoluteFill, imageAnimatedStyle]}>
         <Svg width={width} height={height + 50}>
           <ClipPath id="clipPathId">
@@ -104,33 +113,39 @@ export default function App() {
           </Pressable>
         </Animated.View>
       ) : null}
+      {formActive ? (
+        <Animated.View
+          style={styles.formInputContainer}
+          entering={FadeIn.delay(500)}
+          exiting={FadeOut.delay(100)}
+        >
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor="black"
+            style={styles.textInput}
+          />
+          <TextInput
+            placeholder="Full Name"
+            placeholderTextColor="black"
+            style={[
+              styles.textInput,
+              { display: loginOrRegister === "Register" ? "flex" : "none" },
+            ]}
+          />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor="black"
+            style={styles.textInput}
+          />
+          <Pressable style={[styles.button, styles.formButton]}>
+            <Text style={styles.buttonText}>
+              {loginOrRegister === "Login" ? "LOGIN" : "REGISTER"}
+            </Text>
+          </Pressable>
+        </Animated.View>
+      ) : null}
 
-      <Animated.View style={styles.formInputContainer}>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor="black"
-          style={styles.textInput}
-        />
-        <TextInput
-          placeholder="Full Name"
-          placeholderTextColor="black"
-          style={[
-            styles.textInput,
-            { display: loginOrRegister === "Register" ? "flex" : "none" },
-          ]}
-        />
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor="black"
-          style={styles.textInput}
-        />
-        <Pressable style={[styles.button, styles.formButton]}>
-          <Text style={styles.buttonText}>
-            {loginOrRegister === "Login" ? "LOGIN" : "REGISTER"}
-          </Text>
-        </Pressable>
-      </Animated.View>
       <StatusBar style="light" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }

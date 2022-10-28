@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 10,
     paddingHorizontal: 10,
+    backgroundColor: "white",
   },
   formInputContainer: {
     marginBottom: 70,
-    zIndex: -10,
   },
   formButton: {
     backgroundColor: "#0E9691",
